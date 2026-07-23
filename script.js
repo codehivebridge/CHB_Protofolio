@@ -104,7 +104,7 @@ function renderProjects(){
         <div class="hex-tags">${allTags.map(t => `<span>${STACKS[t]?.label || t}</span>`).join("")}</div>
         <p>${p.summary}</p>
         ${isFree
-          ? `<a class="btn btn-honey" href="${p.freeUrl}" target="_blank" rel="noopener">Download source</a>`
+          ? `<button class="btn btn-honey" data-free="${p.id}">Get free download</button>`
           : `<button class="btn btn-honey" data-buy="${p.id}">Buy via UPI</button>`
         }
       </article>
@@ -116,7 +116,7 @@ function renderProjects(){
   document.getElementById("statPaid").textContent = PROJECTS.filter(p => p.price > 0).length;
 }
 
-/* ---------- PAYMENT MODAL ---------- */
+/* ---------- PAYMENT MODAL (paid projects) ---------- */
 const backdrop = document.getElementById("modalBackdrop");
 const modalBody = document.getElementById("modalBody");
 
@@ -166,6 +166,48 @@ function openBuyModal(project){
   backdrop.hidden = false;
 }
 
+/* ---------- FREE DOWNLOAD MODAL (subscribe + email, free projects) ---------- */
+function openFreeModal(project){
+  modalBody.innerHTML = `
+    <h3 id="modalTitle">${project.title}</h3>
+    <div class="modal-price">Free — just subscribe first</div>
+    <ol class="modal-steps">
+      <li><strong>Subscribe to ${SITE_CONFIG.youtubeChannelName}</strong> on YouTube using the button below.</li>
+      <li>Enter the email address you'd like the source code sent to.</li>
+      <li>Tap "Request download" — this opens your email app with everything filled in, ready to send.</li>
+      <li>Once your subscription is confirmed, the file is sent to that email.</li>
+    </ol>
+    <a class="btn btn-honey btn-block" href="${SITE_CONFIG.youtubeUrl}" target="_blank" rel="noopener">Subscribe on YouTube</a>
+    <div class="email-row">
+      <input type="email" id="freeEmailInput" placeholder="you@example.com" required />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-block" id="sendFreeRequest">Request download</button>
+    </div>
+    <p class="modal-note" id="freeModalNote" style="display:none;">Please enter a valid email first.</p>
+  `;
+
+  document.getElementById("sendFreeRequest").addEventListener("click", () => {
+    const emailInput = document.getElementById("freeEmailInput");
+    const note = document.getElementById("freeModalNote");
+    const visitorEmail = emailInput.value.trim();
+
+    if (!visitorEmail || !visitorEmail.includes("@")) {
+      note.style.display = "block";
+      return;
+    }
+
+    const subject = encodeURIComponent("Free download request: " + project.title);
+    const body = encodeURIComponent(
+      `Hi! I subscribed to ${SITE_CONFIG.youtubeChannelName} on YouTube and would like the free source code for "${project.title}".\n\nPlease send it to: ${visitorEmail}`
+    );
+    const mailLink = `mailto:${SITE_CONFIG.contactEmail}?subject=${subject}&body=${body}`;
+    window.location.href = mailLink;
+  });
+
+  backdrop.hidden = false;
+}
+
 function closeBuyModal(){ backdrop.hidden = true; modalBody.innerHTML = ""; }
 
 document.addEventListener("click", (e) => {
@@ -173,6 +215,11 @@ document.addEventListener("click", (e) => {
   if (buyBtn) {
     const project = PROJECTS.find(p => p.id === buyBtn.dataset.buy);
     if (project) openBuyModal(project);
+  }
+  const freeBtn = e.target.closest("button[data-free]");
+  if (freeBtn) {
+    const project = PROJECTS.find(p => p.id === freeBtn.dataset.free);
+    if (project) openFreeModal(project);
   }
 });
 document.getElementById("modalClose").addEventListener("click", closeBuyModal);
