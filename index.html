@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Hive Bridge — Full-Stack Builder Portfolio</title>
+<meta name="description" content="One builder, six stacks, 80+ shipped web applications. Browse and download source code — free and paid.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-hex" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg>
+        <span class="brand-c">C</span>
+      </span>
+      <span class="brand-word">CODE HIVE<em>BRIDGE</em></span>
+    </a>
+    <nav class="main-nav">
+      <a href="#stacks">Stacks</a>
+      <a href="#projects">Projects</a>
+      <a href="#buy-help">Buying source code</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Full-stack builder</p>
+      <h1>One builder.<br>Six stacks.<br><span class="accent">80+ shipped apps.</span></h1>
+      <p class="hero-lede">Everything from the interface down to the database, bridged together — HTML, CSS, JavaScript, Python, PHP and MySQL, all working the hive. Browse the work below, grab the free builds, or pick up the source for a paid one.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-honey">Browse projects</a>
+        <a href="#buy-help" class="btn btn-ghost">How paid downloads work</a>
+      </div>
+    </div>
+
+    <div class="hero-bridge" aria-label="Six stacks bridged together">
+      <svg viewBox="0 0 640 220" class="bridge-svg" role="img" aria-hidden="true">
+        <line x1="60" y1="150" x2="580" y2="150" class="bridge-deck"/>
+        <g class="bridge-truss">
+          <line x1="60" y1="150" x2="140" y2="90"/>
+          <line x1="140" y1="90" x2="220" y2="150"/>
+          <line x1="220" y1="150" x2="300" y2="90"/>
+          <line x1="300" y1="90" x2="380" y2="150"/>
+          <line x1="380" y1="150" x2="460" y2="90"/>
+          <line x1="460" y1="90" x2="540" y2="150"/>
+          <line x1="540" y1="150" x2="580" y2="150"/>
+        </g>
+      </svg>
+      <div class="stack-hexes" id="stackHexes"><!-- injected by script.js --></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS STRIP ============ -->
+<section class="stats-strip">
+  <div class="wrap stats-inner">
+    <div class="stat"><span class="stat-num" id="statTotal">80+</span><span class="stat-label">apps shipped</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">stacks bridged</span></div>
+    <div class="stat"><span class="stat-num" id="statFree">—</span><span class="stat-label">free to download</span></div>
+    <div class="stat"><span class="stat-num" id="statPaid">—</span><span class="stat-label">paid source</span></div>
+  </div>
+</section>
+
+<!-- ============ STACK LEGEND ============ -->
+<section class="stacks" id="stacks">
+  <div class="wrap">
+    <h2>The hive runs on six combs</h2>
+    <div class="stack-legend" id="stackLegend"><!-- injected by script.js --></div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="projects" id="projects">
+  <div class="wrap">
+    <div class="projects-head">
+      <h2>Project comb</h2>
+      <p class="section-sub">Every hex is a shipped app. Filter by stack or by price, then open one up.</p>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group" id="stackFilters" role="group" aria-label="Filter by stack"></div>
+      <div class="filter-group" id="priceFilters" role="group" aria-label="Filter by price">
+        <button class="chip is-active" data-price="all">All</button>
+        <button class="chip" data-price="free">Free</button>
+        <button class="chip" data-price="paid">Paid</button>
+      </div>
+    </div>
+
+    <div class="hex-grid" id="hexGrid"><!-- injected by script.js --></div>
+    <p class="empty-state" id="emptyState" hidden>No projects match those filters yet — try clearing one.</p>
+  </div>
+</section>
+
+<!-- ============ BUY HELP ============ -->
+<section class="buy-help" id="buy-help">
+  <div class="wrap buy-help-inner">
+    <h2>How paid downloads work</h2>
+    <ol class="buy-steps">
+      <li><strong>Open a paid project</strong> and tap "Buy via UPI." A QR code and UPI ID appear, already filled in with that project's price.</li>
+      <li><strong>Pay with any UPI app</strong> — Google Pay, PhonePe, Paytm, or your bank's app.</li>
+      <li><strong>Send the payment screenshot</strong> along with the project name, using the WhatsApp or email button in the same window.</li>
+      <li><strong>Get your source code</strong> — it's sent to you directly once the payment is confirmed, usually within a day.</li>
+    </ol>
+    <p class="buy-note">Payments are verified by hand, not by an automatic gateway — so keep the screenshot until you've received your files.</p>
+  </div>
+</section>
+
+<!-- ============ PAYMENT MODAL ============ -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+    <div id="modalBody"><!-- injected by script.js --></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>Code Hive Bridge — built one hex at a time.</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
