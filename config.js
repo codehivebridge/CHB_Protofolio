@@ -65,7 +65,7 @@ const PROJECTS = [
     stack: "python",
     tags: ["html, css"],
     summary: "A Python application that watches your webcam and, the moment a person's face appears in front of the camera, captures a snapshot and instantly emails it to you.",
-    price: 0,
-    freeUrl: "https://github.com/codehivebridge/camera_alert"
+    price: 1,
+    freeUrl: "https://github.com/codehivebridge/Camera-Alert"
   }
 ];
