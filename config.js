@@ -38,7 +38,7 @@ const PROJECTS = [
     stack: "js",
     tags: ["html", "css"],
     summary: "A single-page voice-to-text tool: tap the mic, talk, and watch your words appear live in a readable transcript — powered by a real-time circular waveform that reacts to your actual microphone volume.",
-    price: 1,
+    price: 0,
     freeUrl: "https://github.com/codehivebridge/Voice-Scribe-Speech-to-Text"
   },
   {
@@ -47,7 +47,7 @@ const PROJECTS = [
     stack: "html",
     tags: ["css"],
     summary: "A single-page, client-side resume builder — fill in a form on the left, watch a live resume preview render on the right, pick from 6 professional templates, and export the result straight to PDF.",
-    price: 1,
+    price: 0,
     freeUrl: "https://github.com/codehivebridge/Resume-Builder"
   },
   {
@@ -58,5 +58,14 @@ const PROJECTS = [
     summary: "A single-page birthday card generator: fill in a name, relationship, and tone, pick an animated style, and get a unique animated card every time. Download it as a PNG snapshot or as an animated GIF that captures the motion.",
     price: 0,
     freeUrl: "https://github.com/codehivebridge/Wish-Weaver"
+  }
+   {
+    id: "camera_alert",
+    title: "Camera Alert",
+    stack: "python",
+    tags: ["html, css"],
+    summary: "A Python application that watches your webcam and, the moment a person's face appears in front of the camera, captures a snapshot and instantly emails it to you.",
+    price: 0,
+    freeUrl: "https://github.com/codehivebridge/camera_alert"
   }
 ];
