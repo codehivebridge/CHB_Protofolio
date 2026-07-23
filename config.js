@@ -58,7 +58,7 @@ const PROJECTS = [
     summary: "A single-page birthday card generator: fill in a name, relationship, and tone, pick an animated style, and get a unique animated card every time. Download it as a PNG snapshot or as an animated GIF that captures the motion.",
     price: 0,
     freeUrl: "https://github.com/codehivebridge/Wish-Weaver"
-  }
+  },
    {
     id: "camera_alert",
     title: "Camera Alert",
