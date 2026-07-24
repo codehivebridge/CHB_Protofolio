@@ -26,6 +26,7 @@
     <nav class="main-nav">
       <a href="#stacks">Stacks</a>
       <a href="#projects">Projects</a>
+      <a href="#services">Services</a>
       <a href="#free-help">Free downloads</a>
       <a href="#buy-help">Paid downloads</a>
     </nav>
@@ -37,7 +38,7 @@
   <div class="wrap hero-inner">
     <div class="hero-copy">
       <p class="eyebrow">Full-stack builder</p>
-      <h1>One builder.<br>Six stacks.<br><span class="accent"></span></h1>
+      <h1>One builder.<br>Six stacks.<br><span class="accent">Bridged together.</span></h1>
       <p class="hero-lede">Everything from the interface down to the database, bridged together — HTML, CSS, JavaScript, Python, PHP and MySQL, all working the hive. Browse the work below, subscribe for the free builds, or pick up the source for a paid one.</p>
       <div class="hero-cta">
         <a href="#projects" class="btn btn-honey">Browse projects</a>
@@ -45,20 +46,30 @@
       </div>
     </div>
 
-    <div class="hero-bridge" aria-label="Six stacks bridged together">
-      <svg viewBox="0 0 640 220" class="bridge-svg" role="img" aria-hidden="true">
-        <line x1="60" y1="150" x2="580" y2="150" class="bridge-deck"/>
-        <g class="bridge-truss">
-          <line x1="60" y1="150" x2="140" y2="90"/>
-          <line x1="140" y1="90" x2="220" y2="150"/>
-          <line x1="220" y1="150" x2="300" y2="90"/>
-          <line x1="300" y1="90" x2="380" y2="150"/>
-          <line x1="380" y1="150" x2="460" y2="90"/>
-          <line x1="460" y1="90" x2="540" y2="150"/>
-          <line x1="540" y1="150" x2="580" y2="150"/>
-        </g>
-      </svg>
-      <div class="stack-hexes" id="stackHexes"><!-- injected by script.js --></div>
+    <!-- 3D laptop stage: types the real run-command for a project, cycling
+         through PROJECTS from config.js. See initHeroStage() in script.js -->
+    <div class="hero-stage" id="heroStage" aria-hidden="true">
+      <div class="ground-glow"></div>
+      <div class="rig" id="heroRig">
+        <div class="live-pill mono" id="stagePill">● shipping builds</div>
+
+        <div class="orbit-hexes" id="stackHexes"><!-- injected by script.js --></div>
+
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-chrome"><span></span><span></span><span></span></div>
+            <div class="screen-body">
+              <div class="screen-logo"><span class="hexmark"></span> CODE HIVE BRIDGE</div>
+              <div class="screen-terminal mono">
+                <div class="line"><span class="prompt">$</span> <span class="cmd" id="stageCmd"></span><span class="cursor"></span></div>
+                <div class="line out" id="stageOut"></div>
+              </div>
+              <div class="stage-chips" id="stageChips"><!-- injected by script.js --></div>
+            </div>
+          </div>
+          <div class="laptop-base"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -103,6 +114,28 @@
   </div>
 </section>
 
+<!-- ============ SERVICES ============ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <h2>Beyond the download</h2>
+    <p class="section-sub">Two ways to work with the hive directly, on top of anything you grab from the comb above.</p>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="hex-badge"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>&lt;/&gt;</span></div>
+        <h3>Source code</h3>
+        <p>Full source for any project in the comb — free ones after a subscription, paid ones after a UPI payment. Same code that's running in the demo above, nothing stripped out.</p>
+        <a class="btn btn-ghost" href="#projects">Browse projects</a>
+      </div>
+      <div class="service-card">
+        <div class="hex-badge"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>SET</span></div>
+        <h3>Setup support</h3>
+        <p>Downloaded a project and it won't run? I'll help you install dependencies, fix config, and get it working on your machine — over email or WhatsApp.</p>
+        <button class="btn btn-honey" data-setup>Get setup help</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ FREE DOWNLOAD HELP ============ -->
 <section class="buy-help" id="free-help">
   <div class="wrap buy-help-inner">
@@ -131,7 +164,7 @@
   </div>
 </section>
 
-<!-- ============ PAYMENT / FREE-DOWNLOAD MODAL ============ -->
+<!-- ============ PAYMENT / FREE-DOWNLOAD / SETUP MODAL ============ -->
 <div class="modal-backdrop" id="modalBackdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button class="modal-close" id="modalClose" aria-label="Close">×</button>
