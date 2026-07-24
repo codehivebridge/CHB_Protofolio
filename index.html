@@ -154,22 +154,74 @@
     margin-bottom:0.5rem;
   }
   .screen-h1 b{ color:var(--honey); }
-  .screen-sub{ font-size:0.68rem; color:var(--muted); max-width:16rem; margin-bottom:0.9rem; }
-  .screen-cards{ display:flex; gap:0.5rem; }
-  .screen-cards div{
-    flex:1;
-    height:44px;
+  .screen-sub{ font-size:0.68rem; color:var(--muted); max-width:16rem; margin-bottom:0.7rem; }
+
+  /* animated "code running" terminal */
+  .screen-terminal{
+    background:rgba(0,0,0,0.32);
+    border:1px solid rgba(255,255,255,0.06);
     border-radius:6px;
+    padding:0.5rem 0.65rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem;
+    line-height:1.6;
+    height:56px;
+    margin-bottom:0.7rem;
+    overflow:hidden;
+  }
+  .screen-terminal .line{ white-space:nowrap; }
+  .screen-terminal .prompt{ color:var(--cyan); }
+  .screen-terminal .cmd{ color:#fff; }
+  .screen-terminal .cursor{
+    display:inline-block; width:6px; height:11px;
+    background:var(--honey);
+    margin-left:2px;
+    transform:translateY(2px);
+    animation: blink 0.9s step-end infinite;
+  }
+  .screen-terminal .out{
+    color:#7CE0A0;
+    opacity:0;
+    transition:opacity 0.3s ease;
+  }
+  .screen-terminal .out.show{ opacity:1; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* real project chips */
+  .project-chips{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.4rem;
+  }
+  .project-chip{
     background:rgba(255,255,255,0.05);
     border:1px solid rgba(255,255,255,0.07);
-    position:relative;
+    border-radius:6px;
+    padding:0.32rem 0.5rem;
+    transition:border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  .screen-cards div::after{
-    content:attr(data-tag);
-    position:absolute; bottom:4px; left:6px;
+  .project-chip .p-name{
+    display:block;
+    color:#fff;
+    font-weight:600;
+    font-size:0.56rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .project-chip .p-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:2px;
     font-family:'JetBrains Mono', monospace;
-    font-size:0.5rem;
-    color:var(--cyan);
+    font-size:0.48rem;
+    color:var(--muted);
+  }
+  .project-chip .p-meta .price{ color:var(--cyan); }
+  .project-chip.is-running{
+    border-color:var(--honey);
+    box-shadow:0 0 0 1px var(--honey) inset;
   }
 
   /* floating orbiting stack hexes around the laptop */
@@ -278,13 +330,11 @@
           <div class="screen-chrome"><span></span><span></span><span></span></div>
           <div class="screen-body">
             <div class="screen-logo"><span class="hexmark"></span> CODE HIVE BRIDGE</div>
-            <div class="screen-h1">One builder.<br><b>Six stacks</b> bridged.</div>
-            <div class="screen-sub">80+ apps shipped — free and paid source, browse by stack.</div>
-            <div class="screen-cards">
-              <div data-tag="HTML"></div>
-              <div data-tag="PY"></div>
-              <div data-tag="PHP"></div>
+            <div class="screen-terminal mono" id="screenTerminal">
+              <div class="line"><span class="prompt">$</span> <span class="cmd" id="cmdText"></span><span class="cursor"></span></div>
+              <div class="line out" id="outText"></div>
             </div>
+            <div class="project-chips" id="projectChips"></div>
           </div>
         </div>
         <div class="laptop-base"></div>
@@ -293,6 +343,101 @@
     </div>
   </div>
 </section>
+
+<script>
+  // Real project data (from the Code Hive Bridge project list) —
+  // swap this array for the full 80+ list whenever it's ready.
+  const DEMO_PROJECTS = [
+    {
+      title: "Voice Scribe",
+      tags: ["JS", "HTML", "CSS"],
+      price: 0,
+      cmd: "node voice-scribe.js",
+      out: "✓ listening — live transcript running"
+    },
+    {
+      title: "Resume Builder",
+      tags: ["HTML", "CSS"],
+      price: 0,
+      cmd: "open resume-builder.html",
+      out: "✓ live preview rendered, PDF ready"
+    },
+    {
+      title: "Wish Weaver",
+      tags: ["HTML", "CSS"],
+      price: 0,
+      cmd: "npm run wish-weaver",
+      out: "✓ animated birthday card generated"
+    },
+    {
+      title: "Camera Alert",
+      tags: ["PYTHON", "HTML"],
+      price: 1,
+      cmd: "python camera_alert.py",
+      out: "✓ face detected — snapshot emailed"
+    }
+  ];
+
+  const chipsEl = document.getElementById('projectChips');
+  chipsEl.innerHTML = DEMO_PROJECTS.map((p, i) => `
+    <div class="project-chip" data-i="${i}">
+      <span class="p-name">${p.title}</span>
+      <div class="p-meta">
+        <span>${p.tags[0]}</span>
+        <span class="price">${p.price === 0 ? "Free" : "₹" + p.price}</span>
+      </div>
+    </div>
+  `).join("");
+
+  const cmdEl = document.getElementById('cmdText');
+  const outEl = document.getElementById('outText');
+  const chipNodes = () => Array.from(chipsEl.querySelectorAll('.project-chip'));
+
+  let pIndex = 0;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeCommand(text, done){
+    cmdEl.textContent = "";
+    outEl.classList.remove('show');
+    outEl.textContent = "";
+    let i = 0;
+    const step = () => {
+      cmdEl.textContent = text.slice(0, i);
+      i++;
+      if (i <= text.length) {
+        setTimeout(step, 32);
+      } else {
+        done();
+      }
+    };
+    step();
+  }
+
+  function runTypingLoop(){
+    const project = DEMO_PROJECTS[pIndex];
+    chipNodes().forEach(c => c.classList.toggle('is-running', Number(c.dataset.i) === pIndex));
+
+    typeCommand(project.cmd, () => {
+      setTimeout(() => {
+        outEl.textContent = project.out;
+        outEl.classList.add('show');
+      }, 220);
+    });
+
+    pIndex = (pIndex + 1) % DEMO_PROJECTS.length;
+  }
+
+  if (prefersReducedMotion) {
+    // show a single static state rather than looping
+    cmdEl.textContent = DEMO_PROJECTS[0].cmd;
+    outEl.textContent = DEMO_PROJECTS[0].out;
+    outEl.classList.add('show');
+    chipNodes()[0]?.classList.add('is-running');
+  } else {
+    runTypingLoop();
+    setInterval(runTypingLoop, 3200);
+  }
+</script>
 
 <script>
   // Subtle mouse-parallax on top of the ambient float animation.
