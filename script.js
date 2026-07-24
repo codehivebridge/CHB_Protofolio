@@ -5,12 +5,23 @@
    ========================================================================= */
 
 const STACKS = {
-  html:   { label: "HTML",   short: "<>",  },
-  css:    { label: "CSS",    short: "{ }", },
-  js:     { label: "JavaScript", short: "JS", },
-  python: { label: "Python", short: "PY", },
-  php:    { label: "PHP",    short: "PHP", },
-  mysql:  { label: "MySQL",  short: "DB", }
+  html:   { label: "HTML",       short: "<>"  },
+  css:    { label: "CSS",        short: "{ }" },
+  js:     { label: "JavaScript", short: "JS"  },
+  python: { label: "Python",     short: "PY"  },
+  php:    { label: "PHP",        short: "PHP" },
+  mysql:  { label: "MySQL",      short: "DB"  }
+};
+
+// How each stack "runs" in the hero terminal — used to build a realistic
+// command + output line for every real project in PROJECTS.
+const RUN_TEMPLATES = {
+  html:   (p) => ({ cmd: `open ${p.id}.html`,      out: `✓ ${p.title} rendered` }),
+  css:    (p) => ({ cmd: `open ${p.id}.html`,      out: `✓ ${p.title} rendered` }),
+  js:     (p) => ({ cmd: `node ${p.id}.js`,        out: `✓ ${p.title} running` }),
+  python: (p) => ({ cmd: `python ${p.id}.py`,      out: `✓ ${p.title} running` }),
+  php:    (p) => ({ cmd: `php ${p.id}.php`,        out: `✓ ${p.title} served` }),
+  mysql:  (p) => ({ cmd: `mysql < ${p.id}.sql`,    out: `✓ ${p.title} seeded` })
 };
 
 const HEX_POINTS = "50,3 95,26 95,74 50,97 5,74 5,26"; // flat-ish pointy hex
@@ -19,15 +30,118 @@ function hexSvg(){
   return `<svg viewBox="0 0 100 100"><polygon points="${HEX_POINTS}"/></svg>`;
 }
 
-/* ---------- HERO: six-stack bridge chain ---------- */
+/* ---------- HERO: six-stack orbit hexes ---------- */
 function renderStackHexes(){
   const el = document.getElementById("stackHexes");
-  el.innerHTML = Object.entries(STACKS).map(([key, s]) => `
-    <div class="stack-hex" title="${s.label}">
+  if (!el) return;
+  el.innerHTML = Object.entries(STACKS).map(([key, s], i) => `
+    <div class="orbit-hex oh-${i}" title="${s.label}">
       ${hexSvg()}
       <span>${s.short}</span>
     </div>
   `).join("");
+}
+
+/* ---------- HERO: laptop terminal, driven by real projects ---------- */
+function buildTerminalQueue(){
+  // Pull the run-command for every real project so the demo always
+  // matches whatever is actually in PROJECTS — no separate fake list to keep in sync.
+  return PROJECTS.map(p => {
+    const template = RUN_TEMPLATES[p.stack] || RUN_TEMPLATES.html;
+    const { cmd, out } = template(p);
+    return { id: p.id, title: p.title, price: p.price, stack: p.stack, cmd, out };
+  });
+}
+
+function renderStageChips(queue){
+  const el = document.getElementById("stageChips");
+  if (!el) return;
+  const shown = queue.slice(0, 4); // keep the laptop screen readable
+  el.innerHTML = shown.map((p, i) => `
+    <div class="stage-chip" data-i="${i}">
+      <span class="p-name">${p.title}</span>
+      <div class="p-meta">
+        <span>${STACKS[p.stack]?.short || p.stack}</span>
+        <span class="price">${p.price === 0 ? "Free" : "₹" + p.price}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function initHeroStage(){
+  const cmdEl = document.getElementById("stageCmd");
+  const outEl = document.getElementById("stageOut");
+  const pillEl = document.getElementById("stagePill");
+  if (!cmdEl || !outEl) return;
+
+  const queue = buildTerminalQueue();
+  if (!queue.length) return;
+
+  const shownCount = Math.min(queue.length, 4);
+  renderStageChips(queue);
+  if (pillEl) pillEl.textContent = `● ${PROJECTS.length}+ builds shipped`;
+
+  const chipNodes = () => Array.from(document.querySelectorAll(".stage-chip"));
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let qIndex = 0;
+
+  function typeCommand(text, done){
+    cmdEl.textContent = "";
+    outEl.classList.remove("show");
+    outEl.textContent = "";
+    let i = 0;
+    const step = () => {
+      cmdEl.textContent = text.slice(0, i);
+      i++;
+      if (i <= text.length) {
+        setTimeout(step, 28);
+      } else {
+        done();
+      }
+    };
+    step();
+  }
+
+  function runLoop(){
+    const project = queue[qIndex % queue.length];
+    const chipIndex = qIndex % shownCount;
+    chipNodes().forEach(c => c.classList.toggle("is-running", Number(c.dataset.i) === chipIndex));
+
+    typeCommand(project.cmd, () => {
+      setTimeout(() => {
+        outEl.textContent = project.out;
+        outEl.classList.add("show");
+      }, 200);
+    });
+
+    qIndex = (qIndex + 1) % queue.length;
+  }
+
+  if (prefersReducedMotion) {
+    cmdEl.textContent = queue[0].cmd;
+    outEl.textContent = queue[0].out;
+    outEl.classList.add("show");
+    chipNodes()[0]?.classList.add("is-running");
+  } else {
+    runLoop();
+    setInterval(runLoop, 3000);
+  }
+
+  // Subtle mouse parallax on the rig, ambient float otherwise.
+  const stage = document.getElementById("heroStage");
+  const rig = document.getElementById("heroRig");
+  if (stage && rig && !prefersReducedMotion && window.matchMedia("(hover: hover)").matches) {
+    stage.addEventListener("mousemove", (e) => {
+      const r = stage.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      rig.style.transform = `translateY(${(-py * 10).toFixed(1)}px) rotateX(${(8 - py * 10).toFixed(1)}deg) rotateY(${(-16 - px * 12).toFixed(1)}deg)`;
+      rig.style.animation = "none";
+    });
+    stage.addEventListener("mouseleave", () => {
+      rig.style.animation = "float-rig 7s ease-in-out infinite";
+    });
+  }
 }
 
 /* ---------- STACK LEGEND ---------- */
@@ -148,7 +262,6 @@ function openBuyModal(project){
     </div>
   `;
 
-  // Generate QR client-side (needs internet on the visitor's browser, same as any live site)
   const qrTarget = document.getElementById("qrTarget");
   if (window.QRCode) {
     new QRCode(qrTarget, { text: upiUri, width: 176, height: 176, colorDark: "#12151c", colorLight: "#ffffff" });
@@ -208,6 +321,24 @@ function openFreeModal(project){
   backdrop.hidden = false;
 }
 
+/* ---------- SETUP SUPPORT MODAL (Services tab) ---------- */
+function openSetupModal(){
+  modalBody.innerHTML = `
+    <h3 id="modalTitle">Setup support</h3>
+    <div class="modal-price">Get any project running on your machine</div>
+    <ol class="modal-steps">
+      <li>Tell me which project you downloaded and what's not working.</li>
+      <li>Include your OS and, if there's one, the exact error message.</li>
+      <li>I'll walk you through installing dependencies and fixing config over chat.</li>
+    </ol>
+    <div class="modal-actions">
+      <a class="btn btn-honey btn-block" href="mailto:${SITE_CONFIG.contactEmail}?subject=${encodeURIComponent('Setup support request')}">Email for setup help</a>
+      <a class="btn btn-ghost btn-block" href="https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent('Hi! I need setup support for a project I downloaded from Code Hive Bridge.')}" target="_blank" rel="noopener">Ask on WhatsApp</a>
+    </div>
+  `;
+  backdrop.hidden = false;
+}
+
 function closeBuyModal(){ backdrop.hidden = true; modalBody.innerHTML = ""; }
 
 document.addEventListener("click", (e) => {
@@ -221,6 +352,8 @@ document.addEventListener("click", (e) => {
     const project = PROJECTS.find(p => p.id === freeBtn.dataset.free);
     if (project) openFreeModal(project);
   }
+  const setupBtn = e.target.closest("button[data-setup]");
+  if (setupBtn) openSetupModal();
 });
 document.getElementById("modalClose").addEventListener("click", closeBuyModal);
 backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeBuyModal(); });
@@ -229,6 +362,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeBuyMo
 /* ---------- INIT ---------- */
 document.getElementById("statTotal").textContent = PROJECTS.length + (PROJECTS.length >= 80 ? "" : "+");
 renderStackHexes();
+initHeroStage();
 renderStackLegend();
 renderStackFilterChips();
 bindPriceFilterChips();
