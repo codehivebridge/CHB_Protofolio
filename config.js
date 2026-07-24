@@ -1,30 +1,29 @@
-=========================================================================
+/* =========================================================================
    CODE HIVE BRIDGE — EDIT THIS FILE, NOT script.js
    Everything you need to change to make this site yours lives here.
    ========================================================================= */
 const SITE_CONFIG = {
   // ---- Your payment details (shown inside the "Buy via UPI" popup) ----
-  upiId: "8495879228@ybl",          // <-- put your real UPI ID here, e.g. "codehivebridge@okaxis"
-  payeeName: "Code Hive Bridge",  // shows in the UPI app when someone pays
+  upiId: "8495879228@ybl",          // <-- your real UPI ID, e.g. "codehivebridge@okaxis"
+  payeeName: "Code Hive Bridge",    // shows in the UPI app when someone pays
   // ---- How buyers reach you after paying ----
-  whatsappNumber: "918495879228", // <-- country code + number, no +, no spaces, no dashes
-  contactEmail: "bytebridge393@gmail.com" // <-- your real email
+  whatsappNumber: "918495879228",   // <-- country code + number, no +, no spaces, no dashes
+  contactEmail: "bytebridge393@gmail.com", // <-- your real email
+  // ---- Free-download flow (used by the "Get free download" popup) ----
+  youtubeChannelName: "Code Hive Bridge",             // <-- shown as "Subscribe to ___"
+  youtubeUrl: "https://www.youtube.com/@CodeHiveBridge" // <-- your real channel URL
 };
 /* =========================================================================
    PROJECT LIST
    -------------------------------------------------------------------------
-   This is placeholder/sample data so the site works out of the box.
-   Replace this array with your real 80+ projects. Each project needs:
+   Replace/extend this array with your real 80+ projects. Each project needs:
    id        - unique short string, no spaces
    title     - project name shown on the card
    stack     - one of: "html", "css", "js", "python", "php", "mysql"
-               (pick the PRIMARY stack — you can add more in tags)
+               (pick the PRIMARY stack — you can add more in `tags`)
    tags      - array of extra stack labels shown as small pills
    summary   - 1-2 sentence description
    price     - 0 for free, or a number in INR for paid (e.g. 499)
-   freeUrl   - direct download link for FREE projects
-               (a GitHub repo URL, a zip on Google Drive, etc.) — leave ""
-               for paid projects, it's not used
    ========================================================================= */
 const PROJECTS = [
   {
@@ -59,4 +58,13 @@ const PROJECTS = [
     summary: "A Python application that watches your webcam and, the moment a person's face appears in front of the camera, captures a snapshot and instantly emails it to you.",
     price: 1
   }
+  // Add the rest of your 80+ projects below, same shape as above:
+  // {
+  //   id: "unique-id-here",
+  //   title: "Project Name",
+  //   stack: "html" | "css" | "js" | "python" | "php" | "mysql",
+  //   tags: ["extra", "stacks"],
+  //   summary: "Short description of what it does.",
+  //   price: 0
+  // },
 ];
