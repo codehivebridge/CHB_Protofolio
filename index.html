@@ -1,153 +1,320 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Code Hive Bridge — Full-Stack Builder Portfolio</title>
-<meta name="description" content="One builder, six stacks web applications. Browse and download source code — free and paid.">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Hive Bridge — 3D Hero Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F1B33;
+    --navy-2:#152040;
+    --navy-3:#0B1424;
+    --honey:#F0A93A;
+    --honey-deep:#C97F1E;
+    --cyan:#34C6C6;
+    --ink:#E8ECF4;
+    --muted:#8A94AD;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; min-height:100%;
+    background:radial-gradient(circle at 20% 0%, #16224a 0%, var(--navy-3) 55%);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,.display{ font-family:'Space Grotesk', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  .wrap{ max-width:1160px; margin:0 auto; padding:0 1.5rem; }
+
+  /* ---------------- HERO LAYOUT ---------------- */
+  .hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:center;
+    gap:2rem;
+    padding:5rem 0 4rem;
+    min-height:88vh;
+  }
+  @media (max-width: 900px){
+    .hero{ grid-template-columns:1fr; padding:3rem 0 2rem; }
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.16em;
+    color:var(--honey);
+    margin:0 0 0.6rem;
+  }
+  .hero h1{
+    font-size:clamp(2.2rem, 4.5vw, 3.4rem);
+    line-height:1.06;
+    margin:0 0 1.1rem;
+    color:#fff;
+  }
+  .hero p.lede{
+    color:var(--muted);
+    font-size:1.05rem;
+    max-width:34rem;
+    margin:0 0 1.6rem;
+  }
+  .hero-cta{ display:flex; gap:0.8rem; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:0.4rem;
+    padding:0.75rem 1.4rem;
+    border-radius:999px;
+    font-weight:600;
+    font-size:0.92rem;
+    text-decoration:none;
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-honey{ background:var(--honey); color:var(--navy); }
+  .btn-ghost{ background:transparent; color:var(--ink); border-color:rgba(255,255,255,0.18); }
+
+  /* ---------------- 3D STAGE ---------------- */
+  .stage3d{
+    position:relative;
+    height:460px;
+    perspective:1500px;
+  }
+
+  .rig{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+    animation: float-rig 7s ease-in-out infinite;
+  }
+  @keyframes float-rig{
+    0%,100%{ transform: translateY(0px) rotateX(8deg) rotateY(-18deg); }
+    50%{     transform: translateY(-16px) rotateX(6deg) rotateY(-14deg); }
+  }
+
+  /* the laptop, built in CSS */
+  .laptop{
+    position:absolute;
+    top:50%; left:50%;
+    width:420px;
+    transform: translate(-50%,-50%);
+    transform-style:preserve-3d;
+  }
+  .laptop-screen{
+    position:relative;
+    width:420px; height:270px;
+    background:linear-gradient(160deg, #182548, #0c1428);
+    border:10px solid #05070d;
+    border-bottom-width:14px;
+    border-radius:14px 14px 4px 4px;
+    box-shadow:
+      0 40px 70px -20px rgba(0,0,0,0.65),
+      0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow:hidden;
+  }
+  .laptop-base{
+    width:460px; height:16px;
+    margin:0 auto;
+    background:linear-gradient(180deg, #171d2e, #05070d);
+    border-radius:0 0 10px 10px;
+    transform-origin:top center;
+    transform: rotateX(-62deg);
+    box-shadow:0 18px 26px -10px rgba(0,0,0,0.6);
+  }
+
+  /* mini mock of the Code Hive Bridge homepage, inside the screen */
+  .screen-chrome{
+    display:flex; align-items:center; gap:0.3rem;
+    padding:0.4rem 0.6rem;
+    background:rgba(255,255,255,0.03);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .screen-chrome span{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.18); }
+  .screen-body{ padding:1.1rem 1.2rem; }
+  .screen-logo{
+    display:flex; align-items:center; gap:0.4rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem; letter-spacing:0.12em;
+    color:var(--muted);
+    margin-bottom:0.9rem;
+  }
+  .screen-logo .hexmark{
+    width:16px; height:16px;
+    background:var(--honey);
+    clip-path:polygon(50% 3%, 95% 26%, 95% 74%, 50% 97%, 5% 74%, 5% 26%);
+  }
+  .screen-h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:#fff;
+    line-height:1.15;
+    margin-bottom:0.5rem;
+  }
+  .screen-h1 b{ color:var(--honey); }
+  .screen-sub{ font-size:0.68rem; color:var(--muted); max-width:16rem; margin-bottom:0.9rem; }
+  .screen-cards{ display:flex; gap:0.5rem; }
+  .screen-cards div{
+    flex:1;
+    height:44px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.07);
+    position:relative;
+  }
+  .screen-cards div::after{
+    content:attr(data-tag);
+    position:absolute; bottom:4px; left:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.5rem;
+    color:var(--cyan);
+  }
+
+  /* floating orbiting stack hexes around the laptop */
+  .orbit-hex{
+    position:absolute;
+    width:52px; height:52px;
+    transform-style:preserve-3d;
+  }
+  .orbit-hex svg{
+    width:100%; height:100%;
+    filter:drop-shadow(0 10px 16px rgba(0,0,0,0.4));
+  }
+  .orbit-hex polygon{ fill:var(--navy-2); stroke:var(--honey); stroke-width:2.5; }
+  .orbit-hex span{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:0.72rem;
+    color:var(--honey);
+  }
+
+  .oh-1{ top:-8%;  left:2%;   animation: bob 6s ease-in-out infinite; }
+  .oh-2{ top:6%;   right:-4%; animation: bob 5.2s ease-in-out infinite 0.4s; }
+  .oh-3{ bottom:2%;left:-6%;  animation: bob 6.6s ease-in-out infinite 0.9s; }
+  .oh-4{ bottom:-10%;right:8%;animation: bob 5.6s ease-in-out infinite 1.3s; }
+  .oh-5{ top:38%;  left:-12%; animation: bob 7s ease-in-out infinite 0.6s; }
+  .oh-6{ top:42%;  right:-14%;animation: bob 6.2s ease-in-out infinite 1.6s; }
+
+  @keyframes bob{
+    0%,100%{ transform: translateZ(60px) translateY(0px); }
+    50%{     transform: translateZ(60px) translateY(-12px); }
+  }
+
+  /* floating status pill, fades in/out like a live caption */
+  .live-pill{
+    position:absolute;
+    top:8%; left:50%;
+    transform:translateX(-50%) translateZ(90px);
+    background:rgba(11,20,36,0.85);
+    border:1px solid rgba(240,169,58,0.4);
+    color:var(--honey);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    padding:0.35rem 0.8rem;
+    border-radius:999px;
+    white-space:nowrap;
+    opacity:0;
+    animation: pill-cycle 8s ease-in-out infinite;
+  }
+  @keyframes pill-cycle{
+    0%, 100%{ opacity:0; transform:translateX(-50%) translateZ(90px) translateY(6px); }
+    8%, 30%{  opacity:1; transform:translateX(-50%) translateZ(90px) translateY(0); }
+    38%{      opacity:0; transform:translateX(-50%) translateZ(90px) translateY(-6px); }
+  }
+
+  .ground-glow{
+    position:absolute;
+    bottom:6%; left:50%;
+    width:360px; height:60px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at center, rgba(240,169,58,0.28), transparent 70%);
+    filter:blur(6px);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .rig, .orbit-hex, .live-pill{ animation:none !important; }
+  }
+
+  @media (max-width: 900px){
+    .stage3d{ height:360px; }
+    .laptop, .laptop-screen{ width:320px; }
+    .laptop-screen{ height:206px; }
+    .laptop-base{ width:350px; }
+  }
+</style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a href="#top" class="brand">
-      <span class="brand-hex" aria-hidden="true">
-        <svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg>
-        <span class="brand-c">C</span>
-      </span>
-      <span class="brand-word">CODE HIVE<em>BRIDGE</em></span>
-    </a>
-    <nav class="main-nav">
-      <a href="#stacks">Stacks</a>
-      <a href="#projects">Projects</a>
-      <a href="#free-help">Free downloads</a>
-      <a href="#buy-help">Paid downloads</a>
-    </nav>
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="eyebrow">FULL-STACK BUILDER</p>
+    <h1>One builder.<br>Six stacks.<br><span style="color:var(--honey);">Bridged together.</span></h1>
+    <p class="lede">Everything from the interface down to the database — HTML, CSS, JavaScript, Python, PHP and MySQL, all working the hive. Browse the work, subscribe for free builds, or pick up the source for a paid one.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn btn-honey">Browse projects</a>
+      <a href="#" class="btn btn-ghost">How downloads work</a>
+    </div>
   </div>
-</header>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="top">
-  <div class="wrap hero-inner">
-    <div class="hero-copy">
-      <p class="eyebrow">Full-stack builder</p>
-      <h1>One builder.<br>Six stacks.<br><span class="accent"></span></h1>
-      <p class="hero-lede">Everything from the interface down to the database, bridged together — HTML, CSS, JavaScript, Python, PHP and MySQL, all working the hive. Browse the work below, subscribe for the free builds, or pick up the source for a paid one.</p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn btn-honey">Browse projects</a>
-        <a href="#free-help" class="btn btn-ghost">How free downloads work</a>
+  <div class="stage3d" id="stage3d">
+    <div class="ground-glow"></div>
+    <div class="rig" id="rig">
+
+      <div class="live-pill mono">● now shipping project #81</div>
+
+      <div class="orbit-hex oh-1"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>&lt;&gt;</span></div>
+      <div class="orbit-hex oh-2"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>{ }</span></div>
+      <div class="orbit-hex oh-3"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>JS</span></div>
+      <div class="orbit-hex oh-4"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>PY</span></div>
+      <div class="orbit-hex oh-5"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>PHP</span></div>
+      <div class="orbit-hex oh-6"><svg viewBox="0 0 100 100"><polygon points="50,3 95,26 95,74 50,97 5,74 5,26"/></svg><span>DB</span></div>
+
+      <div class="laptop">
+        <div class="laptop-screen">
+          <div class="screen-chrome"><span></span><span></span><span></span></div>
+          <div class="screen-body">
+            <div class="screen-logo"><span class="hexmark"></span> CODE HIVE BRIDGE</div>
+            <div class="screen-h1">One builder.<br><b>Six stacks</b> bridged.</div>
+            <div class="screen-sub">80+ apps shipped — free and paid source, browse by stack.</div>
+            <div class="screen-cards">
+              <div data-tag="HTML"></div>
+              <div data-tag="PY"></div>
+              <div data-tag="PHP"></div>
+            </div>
+          </div>
+        </div>
+        <div class="laptop-base"></div>
       </div>
-    </div>
 
-    <div class="hero-bridge" aria-label="Six stacks bridged together">
-      <svg viewBox="0 0 640 220" class="bridge-svg" role="img" aria-hidden="true">
-        <line x1="60" y1="150" x2="580" y2="150" class="bridge-deck"/>
-        <g class="bridge-truss">
-          <line x1="60" y1="150" x2="140" y2="90"/>
-          <line x1="140" y1="90" x2="220" y2="150"/>
-          <line x1="220" y1="150" x2="300" y2="90"/>
-          <line x1="300" y1="90" x2="380" y2="150"/>
-          <line x1="380" y1="150" x2="460" y2="90"/>
-          <line x1="460" y1="90" x2="540" y2="150"/>
-          <line x1="540" y1="150" x2="580" y2="150"/>
-        </g>
-      </svg>
-      <div class="stack-hexes" id="stackHexes"><!-- injected by script.js --></div>
     </div>
   </div>
 </section>
 
-<!-- ============ STATS STRIP ============ -->
-<section class="stats-strip">
-  <div class="wrap stats-inner">
-    <div class="stat"><span class="stat-num" id="statTotal">80+</span><span class="stat-label">apps shipped</span></div>
-    <div class="stat"><span class="stat-num">6</span><span class="stat-label">stacks bridged</span></div>
-    <div class="stat"><span class="stat-num" id="statFree">—</span><span class="stat-label">free to download</span></div>
-    <div class="stat"><span class="stat-num" id="statPaid">—</span><span class="stat-label">paid source</span></div>
-  </div>
-</section>
+<script>
+  // Subtle mouse-parallax on top of the ambient float animation.
+  // Reduced-motion users keep the CSS animation only (see the media query above).
+  const stage = document.getElementById('stage3d');
+  const rig = document.getElementById('rig');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-<!-- ============ STACK LEGEND ============ -->
-<section class="stacks" id="stacks">
-  <div class="wrap">
-    <h2>The hive runs on six combs</h2>
-    <div class="stack-legend" id="stackLegend"><!-- injected by script.js --></div>
-  </div>
-</section>
-
-<!-- ============ PROJECTS ============ -->
-<section class="projects" id="projects">
-  <div class="wrap">
-    <div class="projects-head">
-      <h2>Project comb</h2>
-      <p class="section-sub">Every hex is a shipped app. Filter by stack or by price, then open one up.</p>
-    </div>
-
-    <div class="filters">
-      <div class="filter-group" id="stackFilters" role="group" aria-label="Filter by stack"></div>
-      <div class="filter-group" id="priceFilters" role="group" aria-label="Filter by price">
-        <button class="chip is-active" data-price="all">All</button>
-        <button class="chip" data-price="free">Free</button>
-        <button class="chip" data-price="paid">Paid</button>
-      </div>
-    </div>
-
-    <div class="hex-grid" id="hexGrid"><!-- injected by script.js --></div>
-    <p class="empty-state" id="emptyState" hidden>No projects match those filters yet — try clearing one.</p>
-  </div>
-</section>
-
-<!-- ============ FREE DOWNLOAD HELP ============ -->
-<section class="buy-help" id="free-help">
-  <div class="wrap buy-help-inner">
-    <h2>How free downloads work</h2>
-    <ol class="buy-steps">
-      <li><strong>Open a free project</strong> and tap "Get free download."</li>
-      <li><strong>Subscribe to the YouTube channel</strong> using the button in the popup.</li>
-      <li><strong>Enter your email address</strong> and tap "Request download" — this opens your email app with everything already filled in.</li>
-      <li><strong>Get your source code</strong> — it's sent to that email once your subscription is confirmed, usually within a day.</li>
-    </ol>
-    <p class="buy-note">Subscriptions are checked by hand, not automatically — so make sure the email you enter is one you actually check.</p>
-  </div>
-</section>
-
-<!-- ============ BUY HELP ============ -->
-<section class="buy-help" id="buy-help">
-  <div class="wrap buy-help-inner">
-    <h2>How paid downloads work</h2>
-    <ol class="buy-steps">
-      <li><strong>Open a paid project</strong> and tap "Buy via UPI." A QR code and UPI ID appear, already filled in with that project's price.</li>
-      <li><strong>Pay with any UPI app</strong> — Google Pay, PhonePe, Paytm, or your bank's app.</li>
-      <li><strong>Send the payment screenshot</strong> along with the project name, using the WhatsApp or email button in the same window.</li>
-      <li><strong>Get your source code</strong> — it's sent to you directly once the payment is confirmed, usually within a day.</li>
-    </ol>
-    <p class="buy-note">Payments are verified by hand, not by an automatic gateway — so keep the screenshot until you've received your files.</p>
-  </div>
-</section>
-
-<!-- ============ PAYMENT / FREE-DOWNLOAD MODAL ============ -->
-<div class="modal-backdrop" id="modalBackdrop" hidden>
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <button class="modal-close" id="modalClose" aria-label="Close">×</button>
-    <div id="modalBody"><!-- injected by script.js --></div>
-  </div>
-</div>
-
-<footer class="site-footer">
-  <div class="wrap footer-inner">
-    <span>Code Hive Bridge — built one hex at a time.</span>
-    <a href="#top">Back to top ↑</a>
-  </div>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="config.js"></script>
-<script src="script.js"></script>
+  if (!prefersReduced && window.matchMedia('(hover: hover)').matches) {
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      rig.style.setProperty('--mx', px.toFixed(3));
+      rig.style.setProperty('--my', py.toFixed(3));
+      rig.style.transform = `translateY(calc(var(--my) * -10px)) rotateX(${8 - py * 10}deg) rotateY(${-18 - px * 14}deg)`;
+      rig.style.animation = 'none';
+    });
+    stage.addEventListener('mouseleave', () => {
+      rig.style.animation = 'float-rig 7s ease-in-out infinite';
+    });
+  }
+</script>
 </body>
 </html>
